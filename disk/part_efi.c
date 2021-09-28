@@ -310,6 +310,15 @@ static int part_test_efi(struct blk_desc *dev_desc)
 {
 	ALLOC_CACHE_ALIGN_BUFFER_PAD(legacy_mbr, legacymbr, 1, dev_desc->blksz);
 
+#ifdef CONFIG_TEGRA_LEGACY_PT
+	/*
+	 * Tegra based boards use custom gpt based partition table on eMMC.
+	 * This function fails for eMMC though gpt exists there. Lets skip it.
+	 */
+	if (dev_desc->uclass_id == UCLASS_MMC && dev_desc->devnum == 0)
+		return 0;
+#endif
+
 	/* Read legacy MBR from block 0 and validate it */
 	if ((blk_dread(dev_desc, 0, 1, (ulong *)legacymbr) != 1)
 		|| (is_pmbr_valid(legacymbr) != 1)) {
@@ -1036,6 +1045,17 @@ static int is_gpt_valid(struct blk_desc *dev_desc, u64 lba,
 		log_debug("ChromeOS 'IGNOREME' GPT header found and ignored\n");
 		return 2;
 	}
+
+#ifdef CONFIG_TEGRA_LEGACY_PT
+	/*
+	 * Invalid but nothing to tell about! If board uses own Tegra partition
+	 * table primary gpt header for eMMC will constantly fail. Use backup.
+	 */
+	if (dev_desc->uclass_id == UCLASS_MMC && dev_desc->devnum == 0) {
+		if (le64_to_cpu(pgpt_head->signature) != GPT_HEADER_SIGNATURE_UBOOT)
+			return 2;
+	};
+#endif
 
 	if (validate_gpt_header(pgpt_head, (lbaint_t)lba, dev_desc->lba))
 		return 0;

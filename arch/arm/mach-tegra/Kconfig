@@ -31,6 +31,10 @@ config TEGRA_IVC
 	  U-Boot, it is typically used for communication between the main CPU
 	  and various auxiliary processors.
 
+config TEGRA_LEGACY_PT
+	bool "Tegra Legacy eMMC partition table support"
+	default n
+
 config TEGRA_MC
 	bool
 
