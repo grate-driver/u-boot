@@ -214,6 +214,7 @@ dtb-$(CONFIG_ARCH_TEGRA) += tegra20-harmony.dtb \
 	tegra20-trimslice.dtb \
 	tegra20-ventana.dtb \
 	tegra20-colibri.dtb \
+	tegra20-qemu.dtb \
 	tegra30-apalis.dtb \
 	tegra30-beaver.dtb \
 	tegra30-cardhu.dtb \
