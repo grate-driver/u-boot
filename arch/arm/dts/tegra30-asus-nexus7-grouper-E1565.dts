@@ -1,0 +1,43 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/dts-v1/;
+
+#include <dt-bindings/input/gpio-keys.h>
+#include <dt-bindings/input/linux-event-codes.h>
+
+#include "tegra30-asus-grouper-common.dtsi"
+
+/ {
+	model = "ASUS Google Nexus 7 (Project Nakasi / ME370T) E1565";
+	compatible = "asus,grouper", "nvidia,tegra30";
+
+	pmic_i2c: i2c@7000d000 {
+		status = "okay";
+		clock-frequency = <400000>;
+	};
+
+	panel: panel {
+		compatible = "simple-panel";
+
+		power-supply = <&vdd_pnl_reg>;
+		enable-gpios = <&gpio TEGRA_GPIO(N, 6) GPIO_ACTIVE_HIGH>;
+
+		backlight = <&backlight>;
+
+		display-timings {
+			timing@0 {
+				/* 1280x800@60Hz */
+				clock-frequency = <68000000>;
+
+				hactive = <800>;
+				hfront-porch = <24>;
+				hback-porch = <32>;
+				hsync-len = <24>;
+
+				vactive = <1280>;
+				vfront-porch = <5>;
+				vback-porch = <32>;
+				vsync-len = <1>;
+			};
+		};
+	};
+};

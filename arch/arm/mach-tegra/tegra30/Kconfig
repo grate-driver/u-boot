@@ -20,6 +20,10 @@ config TARGET_COLIBRI_T30
 	bool "Toradex Colibri T30 board"
 	select BOARD_LATE_INIT
 
+config TARGET_GROUPER
+	bool "Asus and Google Grouper board"
+	select BOARD_LATE_INIT
+
 config TARGET_TEC_NG
 	bool "Avionic Design TEC-NG board"
 	select BOARD_LATE_INIT
@@ -37,6 +41,7 @@ endchoice
 config SYS_SOC
 	default "tegra30"
 
+source "board/asus/grouper/Kconfig"
 source "board/asus/transformer-t30/Kconfig"
 source "board/toradex/apalis_t30/Kconfig"
 source "board/nvidia/beaver/Kconfig"
