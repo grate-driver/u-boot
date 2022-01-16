@@ -91,3 +91,8 @@ config TWL4030_INPUT
 	bool "Enable TWL4030 Input controller"
 	help
 	  Enable TWL4030 Input controller
+
+config GPIO_KEYBOARD
+	bool "Enable GPIO based keyboard support"
+	help
+	  Simple driver for keyboard where each key is controlled via one GPIO.
