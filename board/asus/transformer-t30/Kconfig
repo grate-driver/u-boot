@@ -1,0 +1,27 @@
+if TARGET_TRANSFORMER_T30
+
+config SYS_BOARD
+	default "transformer-t30"
+
+config SYS_VENDOR
+	default "asus"
+
+config SYS_CONFIG_NAME
+	default "transformer-t30"
+
+config TRANSFORMER_SPI_BOOT
+	bool "Enable support for SPI based flash"
+	default n
+	help
+	  Tegra 3 based Transformers with Windows RT have core
+	  boot sequence (BCT, PT, EBT) on separate SPI FLASH
+	  memory with 4MB size.
+
+config TRANSFORMER_TF700T_MIPI
+	bool "Enable support for TF700T MIPI panel configuration"
+	default n
+	help
+	  TF700T has different panel configuration then other
+	  Transformers and uses I2C bridge.
+
+endif
