@@ -28,6 +28,10 @@ config TARGET_TEC
 	bool "Avionic Design Tamonten Evaluation Carrier"
 	select BOARD_LATE_INIT
 
+config TARGET_TRANSFORMER_T20
+	bool "Asus Tegra20 Transformer board"
+	select BOARD_LATE_INIT
+
 config TARGET_TRIMSLICE
 	bool "Compulab TrimSlice board"
 	select BOARD_LATE_INIT
@@ -50,6 +54,7 @@ config TEGRA_LP0
 	select TEGRA_CRYPTO
 	default n
 
+source "board/asus/transformer-t20/Kconfig"
 source "board/nvidia/harmony/Kconfig"
 source "board/avionic-design/medcom-wide/Kconfig"
 source "board/compal/paz00/Kconfig"
