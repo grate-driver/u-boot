@@ -1,0 +1,6 @@
+TF101 BOARD
+M:	Svyatoslav Ryhel <clamor95@gmail.com>
+S:	Maintained
+F:	board/asus/transformer-t20/
+F:	include/configs/transformer-t20.h
+F:	configs/transformer_t20_defconfig
