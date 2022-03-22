@@ -44,4 +44,11 @@ int encrypt_data_block(u8 *source, unsigned length, u8 *key);
  */
 int decrypt_data_block(u8 *source, unsigned length, u8 *key);
 
+/**
+ * Pass AES key from board
+ *
+ * \param key		AES128 encryption key
+ */
+void get_secure_key(u8 *key);
+
 #endif /* #ifndef _CRYPTO_H_ */
