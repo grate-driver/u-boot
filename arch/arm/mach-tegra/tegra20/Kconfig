@@ -47,6 +47,7 @@ config SYS_SOC
 
 config TEGRA_LP0
 	bool "Enable LP0 suspend state support on T20"
+	select TEGRA_CRYPTO
 	default n
 
 source "board/nvidia/harmony/Kconfig"
