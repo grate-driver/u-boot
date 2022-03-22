@@ -45,6 +45,10 @@ endchoice
 config SYS_SOC
 	default "tegra20"
 
+config TEGRA_LP0
+	bool "Enable LP0 suspend state support on T20"
+	default n
+
 source "board/nvidia/harmony/Kconfig"
 source "board/avionic-design/medcom-wide/Kconfig"
 source "board/compal/paz00/Kconfig"
