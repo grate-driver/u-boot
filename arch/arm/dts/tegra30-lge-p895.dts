@@ -1,0 +1,82 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/dts-v1/;
+
+#include "tegra30-lge-x3.dtsi"
+
+/ {
+	model = "LG Optimus Vu";
+	compatible = "lge,p895", "nvidia,tegra30";
+
+	host1x@50000000 {
+		status = "okay";
+		dc@54200000 {
+			status = "okay";
+			rgb {
+				status = "okay";
+
+				nvidia,panel = <&bridge>;
+
+				display-timings {
+					timing@0 {
+						/* 1024x768@60Hz */
+						clock-frequency = <62000000>;
+						hactive = <768>;
+						vactive = <1024>;
+						hfront-porch = <116>;
+						hback-porch = <81>;
+						hsync-len = <5>;
+						vsync-len = <2>;
+						vfront-porch = <24>;
+						vback-porch = <8>;
+					};
+				};
+			};
+		};
+	};
+
+	gpio-keyboard {
+		key-volume-up {
+			label = "Volume Up";
+			gpios = <&gpio TEGRA_GPIO(I, 6) GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_UP>;
+		};
+	};
+
+	panel: panel {
+		compatible = "hitachi,tx13d100vm0eaa";
+
+		reset-gpios = <&gpio TEGRA_GPIO(W, 0) GPIO_ACTIVE_HIGH>;
+
+		vcc-supply = <&vcc_3v0_lcd>;
+		iovcc-supply = <&iovcc_1v8_lcd>;
+
+		backlight = <&backlight>;
+		bridge-spi = <&spi_bus>;
+	};
+
+	regulators {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		vcc_3v0_lcd: regulator@0 {
+			compatible = "regulator-fixed";
+			reg = <0>;
+			regulator-name = "vcc_3v0_lcd";
+			regulator-min-microvolt = <3000000>;
+			regulator-max-microvolt = <3000000>;
+			gpio = <&gpio TEGRA_GPIO(BB, 0) GPIO_ACTIVE_HIGH>;
+			enable-active-high;
+		};
+
+		iovcc_1v8_lcd: regulator@1 {
+			compatible = "regulator-fixed";
+			reg = <1>;
+			regulator-name = "iovcc_1v8_lcd";
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			gpio = <&gpio TEGRA_GPIO(Y, 0) GPIO_ACTIVE_HIGH>;
+			enable-active-high;
+		};
+	};
+};
