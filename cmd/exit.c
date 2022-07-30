@@ -7,6 +7,17 @@
 #include <common.h>
 #include <command.h>
 
+static int do_continue(struct cmd_tbl *cmdtp, int flag, int argc,
+		   char *const argv[])
+{
+	while (true) {
+		if (tstc())
+			break;
+	}
+
+	return 0;
+}
+
 static int do_exit(struct cmd_tbl *cmdtp, int flag, int argc,
 		   char *const argv[])
 {
@@ -15,6 +26,12 @@ static int do_exit(struct cmd_tbl *cmdtp, int flag, int argc,
 
 	return 0;
 }
+
+U_BOOT_CMD(
+	continue,	1,	0,	do_continue,
+	"contimue script on key pressed",
+	""
+);
 
 U_BOOT_CMD(
 	exit,	2,	1,	do_exit,
