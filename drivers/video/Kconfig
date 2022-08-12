@@ -650,6 +650,8 @@ config VIDEO_TEGRA124
 
 source "drivers/video/bridge/Kconfig"
 
+source "drivers/video/lge-x3/Kconfig"
+
 source "drivers/video/imx/Kconfig"
 
 config VIDEO_MXS
