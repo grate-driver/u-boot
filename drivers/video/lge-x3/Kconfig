@@ -5,3 +5,9 @@ config BACKLIGHT_LM3533
 	help
 	  Say Y to enable the backlight driver for National Semiconductor / TI
 	  LM3533 Lighting Power chips.
+
+config BRIDGE_SOLOMON_SSD2825
+	bool "Solomon SSD2825 bridge driver"
+	depends on PANEL && BACKLIGHT && DM_GPIO
+	help
+	  Solomon SSD2824 SPI RGB-DSI bridge driver wrapped into panel uClass.
