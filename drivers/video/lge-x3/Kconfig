@@ -11,3 +11,10 @@ config BRIDGE_SOLOMON_SSD2825
 	depends on PANEL && BACKLIGHT && DM_GPIO
 	help
 	  Solomon SSD2824 SPI RGB-DSI bridge driver wrapped into panel uClass.
+
+config BRIDGE_SPI
+	bool "Solomon SSD2825 bridge SPI bitbang"
+	depends on BRIDGE_SOLOMON_SSD2825
+	select DM_MISC
+	help
+	  SPI bitbang emulation for setting up bridge and panel.
