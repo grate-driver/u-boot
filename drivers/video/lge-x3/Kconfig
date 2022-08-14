@@ -18,3 +18,11 @@ config BRIDGE_SPI
 	select DM_MISC
 	help
 	  SPI bitbang emulation for setting up bridge and panel.
+
+config PANEL_KOE_TX13D100VM0EAA
+	bool "Hitachi KOE TX13D100VM0EAA DSI panel driver"
+	depends on BRIDGE_SOLOMON_SSD2825
+	select BRIDGE_SPI
+	help
+	  Hitachi KOE TX13D100VM0EAA DSI panel setup with panel specific bridge
+	  configuration. Use only with Solomon SSD2825 spi bridge.
