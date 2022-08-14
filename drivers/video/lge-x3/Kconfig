@@ -26,3 +26,11 @@ config PANEL_KOE_TX13D100VM0EAA
 	help
 	  Hitachi KOE TX13D100VM0EAA DSI panel setup with panel specific bridge
 	  configuration. Use only with Solomon SSD2825 spi bridge.
+
+config PANEL_RENESAS_R69328
+	bool "Renesas R69328 DSI panel driver"
+	depends on BRIDGE_SOLOMON_SSD2825
+	select BRIDGE_SPI
+	help
+	  Renesas R69328 DSI panel setup with panel specific bridge configuration.
+	  Use only with Solomon SSD2825 spi bridge for LG Optimux 4X HD.
