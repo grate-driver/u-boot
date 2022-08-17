@@ -48,6 +48,12 @@ static void oem_partconf(char *, char *);
 #if CONFIG_IS_ENABLED(FASTBOOT_CMD_OEM_BOOTBUS)
 static void oem_bootbus(char *, char *);
 #endif
+#if CONFIG_IS_ENABLED(FASTBOOT_CMD_OEM_CONSOLE)
+static void oem_console(char *, char *);
+#endif
+#if CONFIG_IS_ENABLED(FASTBOOT_CMD_OEM_CMD)
+static void oem_cmd(char *, char *);
+#endif
 
 #if CONFIG_IS_ENABLED(FASTBOOT_UUU_SUPPORT)
 static void run_ucmd(char *, char *);
@@ -122,6 +128,18 @@ static const struct {
 		.dispatch = oem_bootbus,
 	},
 #endif
+#if CONFIG_IS_ENABLED(FASTBOOT_CMD_OEM_CONSOLE)
+	[FASTBOOT_COMMAND_OEM_CONSOLE] = {
+		.command = "oem console",
+		.dispatch = oem_console,
+	},
+#endif
+#if CONFIG_IS_ENABLED(FASTBOOT_CMD_OEM_CMD)
+	[FASTBOOT_COMMAND_OEM_CMD] = {
+		.command = "oem cmd",
+		.dispatch = oem_cmd,
+	},
+#endif
 #if CONFIG_IS_ENABLED(FASTBOOT_UUU_SUPPORT)
 	[FASTBOOT_COMMAND_UCMD] = {
 		.command = "UCmd",
@@ -173,6 +191,33 @@ void fastboot_multiresponse(int cmd, char *response)
 		case FASTBOOT_COMMAND_GETVAR:
 			fastboot_getvar_all(response);
 			break;
+#if CONFIG_IS_ENABLED(FASTBOOT_CMD_OEM_CONSOLE) || CONFIG_IS_ENABLED(FASTBOOT_CMD_OEM_CMD)
+		case FASTBOOT_COMMAND_OEM_CONSOLE:
+		case FASTBOOT_COMMAND_OEM_CMD:
+		{
+#ifdef CONFIG_CONSOLE_RECORD
+			char buf[FASTBOOT_RESPONSE_LEN] = { 0 };
+			if (console_record_isempty()) {
+				//Flush the console records to empty buffer
+				console_record_reset();
+				//We are done here
+				fastboot_okay(NULL, response);
+				break;
+			} else {
+				int ret = console_record_readline(buf, sizeof(buf) - 5);
+				if (ret < 0) {
+					fastboot_fail("Error reading console", response);
+				} else {
+					fastboot_response("INFO", response, "%s", buf);
+				}
+			}
+#else
+			//Shouldn't reach here anyway
+			fastboot_okay(NULL, response);
+#endif
+			break;
+		}
+#endif
 		default:
 			fastboot_fail("Unknown multiresponse command", response); 
 			break;
@@ -524,5 +569,58 @@ static void oem_bootbus(char *cmd_parameter, char *response)
 		fastboot_fail("Cannot set oem bootbus", response);
 	else
 		fastboot_okay(NULL, response);
+}
+#endif
+
+#if CONFIG_IS_ENABLED(FASTBOOT_CMD_OEM_CONSOLE)
+/**
+ * oem_console() - Execute the OEM console command
+ *
+ * @cmd_parameter: Pointer to command parameter
+ * @response: Pointer to fastboot response buffer
+ */
+static void oem_console(char *cmd_parameter, char *response)
+{	
+	if (cmd_parameter) {
+		console_in_puts(cmd_parameter);
+	}
+	
+	if (console_record_isempty()) {
+		fastboot_fail("Empty console", response);
+	} else  {
+		fastboot_response("MORE", response, NULL);
+	}
+}
+#endif
+
+#if CONFIG_IS_ENABLED(FASTBOOT_CMD_OEM_CMD)
+/**
+ * oem_cmd() - Execute the OEM cmd command
+ *
+ * @cmd_parameter: Pointer to command parameter
+ * @response: Pointer to fastboot response buffer
+ */
+static void oem_cmd(char *cmd_parameter, char *response)
+{	
+	if (!cmd_parameter) {
+		fastboot_fail("No command was provided", response);
+		return;
+	}
+
+	if (run_command(cmd_parameter, 0)) {
+		fastboot_fail("Error running command", response);
+		return;
+	}
+	
+	//Return console if recording or just OK
+#ifdef CONFIG_CONSOLE_RECORD
+	if (console_record_isempty()) {
+		fastboot_okay(NULL, response);
+	} else  {
+		fastboot_response("MORE", response, NULL);
+	}
+#else
+	fastboot_okay(NULL, response);
+#endif
 }
 #endif
