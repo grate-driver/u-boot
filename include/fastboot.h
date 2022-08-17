@@ -173,6 +173,14 @@ void fastboot_data_download(const void *fastboot_data,
  */
 void fastboot_data_complete(char *response);
 
+/**
+ * fastboot_handle_multiresponse() - Called for each response to send
+ *
+ * @cmd: Command id that requested multiresponse
+ * @response: Pointer to fastboot response buffer
+ */
+void fastboot_multiresponse(int cmd, char *response);
+
 #if CONFIG_IS_ENABLED(FASTBOOT_UUU_SUPPORT)
 void fastboot_acmd_complete(void);
 #endif
