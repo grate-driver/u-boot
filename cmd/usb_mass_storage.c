@@ -231,6 +231,13 @@ static int do_usb_mass_storage(struct cmd_tbl *cmdtp, int flag,
 			goto cleanup_register;
 		}
 
+		/* Abort by pressing any key */
+		if (tstc()) {
+			puts("\rOperation aborted.\n");
+			rc = CMD_RET_SUCCESS;
+			goto cleanup_register;
+		}
+
 		schedule();
 	}
 
