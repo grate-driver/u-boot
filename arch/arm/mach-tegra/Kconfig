@@ -56,6 +56,7 @@ config TEGRA_COMMON
 	select MISC
 	select OF_CONTROL
 	select SPI
+	select TIMER
 	imply CMD_DM
 	imply CRC32_VERIFY
 
@@ -81,6 +82,7 @@ config TEGRA_ARMV7_COMMON
 	select TEGRA_NO_BPMP
 	select TEGRA_PINCTRL
 	select TEGRA_PMC
+	select TEGRA_TIMER
 
 config TEGRA_ARMV8_COMMON
 	bool "Tegra 64-bit common options"
