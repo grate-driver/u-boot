@@ -10,9 +10,6 @@
 
 #include "tegra30-common.h"
 
-/* VDD core PMIC */
-#define CONFIG_TEGRA_VDD_CORE_TPS62366A_SET1
-
 /* High-level configuration options */
 #define CONFIG_TEGRA_BOARD_STRING	"NVIDIA Beaver"
 
