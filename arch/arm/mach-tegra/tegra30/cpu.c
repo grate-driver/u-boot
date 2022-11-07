@@ -12,25 +12,9 @@
 #include <asm/arch-tegra/clk_rst.h>
 #include <asm/arch-tegra/pmc.h>
 #include <asm/arch-tegra/tegra_i2c.h>
+#include <asm/arch-tegra/tegra_spl.h>
 #include <linux/delay.h>
 #include "../cpu.h"
-
-/* Tegra30-specific CPU init code */
-void tegra_i2c_ll_write_addr(uint addr, uint config)
-{
-	struct i2c_ctlr *reg = (struct i2c_ctlr *)TEGRA_DVC_BASE;
-
-	writel(addr, &reg->cmd_addr0);
-	writel(config, &reg->cnfg);
-}
-
-void tegra_i2c_ll_write_data(uint data, uint config)
-{
-	struct i2c_ctlr *reg = (struct i2c_ctlr *)TEGRA_DVC_BASE;
-
-	writel(data, &reg->cmd_data1);
-	writel(config, &reg->cnfg);
-}
 
 #define TPS62366A_I2C_ADDR		0xC0
 #define TPS62366A_SET1_REG		0x01
@@ -45,7 +29,9 @@ void tegra_i2c_ll_write_data(uint data, uint config)
 #define TPS65911_VDDCTRL_SR_REG		0x27
 #define TPS65911_VDDCTRL_OP_DATA	(0x2400 | TPS65911_VDDCTRL_OP_REG)
 #define TPS65911_VDDCTRL_SR_DATA	(0x0100 | TPS65911_VDDCTRL_SR_REG)
-#define I2C_SEND_2_BYTES		0x0A02
+
+/* In case this function is not defined */
+__weak void pmic_enable_cpu_vdd(void) {}
 
 static void enable_cpu_power_rail(void)
 {
@@ -142,6 +128,7 @@ void start_cpu(u32 reset_vector)
 
 	/* Enable VDD_CPU */
 	enable_cpu_power_rail();
+	pmic_enable_cpu_vdd();
 
 	set_cpu_running(0);
 
