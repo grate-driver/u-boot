@@ -7,26 +7,42 @@
 #include <log.h>
 #include <asm/io.h>
 #include <asm/arch-tegra/tegra_i2c.h>
+#include <asm/arch-tegra/tegra_spl.h>
 #include <linux/delay.h>
-#include "as3722_init.h"
+
+/* AS3722-PMIC-specific early init regs */
+
+#define AS3722_I2C_ADDR		0x80
+
+#define AS3722_SD0VOLTAGE_REG	0x00	/* CPU */
+#define AS3722_SD1VOLTAGE_REG	0x01	/* CORE, already set by OTP */
+#define AS3722_SD6VOLTAGE_REG	0x06	/* GPU */
+#define AS3722_SDCONTROL_REG	0x4D
+
+#define AS3722_LDO1VOLTAGE_REG	0x11	/* VDD_SDMMC1 */
+#define AS3722_LDO2VOLTAGE_REG	0x12	/* VPP_FUSE */
+#define AS3722_LDO6VOLTAGE_REG	0x16	/* VDD_SDMMC3 */
+#define AS3722_LDCONTROL_REG	0x4E
+
+#define AS3722_SD0VOLTAGE_DATA	(0x3C00 | AS3722_SD0VOLTAGE_REG)
+#define AS3722_SD0CONTROL_DATA	(0x0100 | AS3722_SDCONTROL_REG)
+
+#define AS3722_SD1VOLTAGE_DATA	(0x3200 | AS3722_SD1VOLTAGE_REG)
+#define AS3722_SD1CONTROL_DATA	(0x0200 | AS3722_SDCONTROL_REG)
+
+#define AS3722_SD6CONTROL_DATA	(0x4000 | AS3722_SDCONTROL_REG)
+#define AS3722_SD6VOLTAGE_DATA	(0x2800 | AS3722_SD6VOLTAGE_REG)
+
+#define AS3722_LDO1CONTROL_DATA	(0x0200 | AS3722_LDCONTROL_REG)
+#define AS3722_LDO1VOLTAGE_DATA	(0x7F00 | AS3722_LDO1VOLTAGE_REG)
+
+#define AS3722_LDO2CONTROL_DATA	(0x0400 | AS3722_LDCONTROL_REG)
+#define AS3722_LDO2VOLTAGE_DATA	(0x1000 | AS3722_LDO2VOLTAGE_REG)
+
+#define AS3722_LDO6CONTROL_DATA	(0x4000 | AS3722_LDCONTROL_REG)
+#define AS3722_LDO6VOLTAGE_DATA	(0x3F00 | AS3722_LDO6VOLTAGE_REG)
 
 /* AS3722-PMIC-specific early init code - get CPU rails up, etc */
-
-void tegra_i2c_ll_write_addr(uint addr, uint config)
-{
-	struct i2c_ctlr *reg = (struct i2c_ctlr *)TEGRA_DVC_BASE;
-
-	writel(addr, &reg->cmd_addr0);
-	writel(config, &reg->cnfg);
-}
-
-void tegra_i2c_ll_write_data(uint data, uint config)
-{
-	struct i2c_ctlr *reg = (struct i2c_ctlr *)TEGRA_DVC_BASE;
-
-	writel(data, &reg->cmd_data1);
-	writel(config, &reg->cnfg);
-}
 
 void pmic_enable_cpu_vdd(void)
 {
