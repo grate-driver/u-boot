@@ -12,6 +12,7 @@ ifndef CONFIG_SPL_BUILD
 obj-$(CONFIG_APPLE_SPI_KEYB) += apple_spi_kbd.o
 obj-$(CONFIG_I8042_KEYB) += i8042.o
 obj-$(CONFIG_TEGRA_KEYBOARD) += input.o tegra-kbc.o
+obj-$(CONFIG_TEGRA_NVEC_KEYBOARD) += tegra-nvec-kbc.o
 obj-$(CONFIG_TWL4030_INPUT) += twl4030.o
 obj-$(CONFIG_TWL6030_INPUT) += twl6030.o
 obj-$(CONFIG_GPIO_KEYBOARD) += gpio-kbd.o

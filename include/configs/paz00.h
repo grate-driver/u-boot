@@ -21,6 +21,14 @@
 
 /* Environment in eMMC, at the end of 2nd "boot sector" */
 
+/* NVEC support */
+#define CONFIG_CMD_I2C
+#define CONFIG_SYS_I2C_INIT_BOARD
+#define BOARD_EXTRA_ENV_SETTINGS \
+	"i2c dev 0" "\0" \
+	"i2c dev 1" "\0" \
+	"i2c dev 2" "\0"
+
 #include "tegra-common-post.h"
 
 #endif /* __CONFIG_H */

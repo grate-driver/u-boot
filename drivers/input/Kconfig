@@ -87,6 +87,12 @@ config TEGRA_KEYBOARD
 	  A matrix keyboard connected directly to the internal keyboard
 	  controller on Tegra SoCs.
 
+config TEGRA_NVEC_KEYBOARD
+	bool "Enable NVEC keyboard"
+	depends on TEGRA_NVEC
+	help
+	  This adds NVEC keyboard driver.
+
 config TWL4030_INPUT
 	bool "Enable TWL4030 Input controller"
 	help

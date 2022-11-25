@@ -721,6 +721,12 @@ config SYS_I2C_IHS
         help
           Support for gdsys IHS I2C driver on FPGA bus.
 
+config TEGRA_NVEC
+       bool "Enable Tegra 2 NVEC driver"
+       select CIRCBUF
+       help
+         Support for Tegra 2 I2C NVEC keyboard.
+
 source "drivers/i2c/muxes/Kconfig"
 
 endif

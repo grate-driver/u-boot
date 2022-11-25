@@ -25,6 +25,8 @@
 
 #ifdef CONFIG_TEGRA_KEYBOARD
 #define STDIN_KBD_KBC ",tegra-kbc"
+#elif defined(CONFIG_TEGRA_NVEC_KEYBOARD)
+#define STDIN_KBD_KBC ",tegra-nvec-kbc"
 #else
 #define STDIN_KBD_KBC ""
 #endif
