@@ -36,6 +36,7 @@ struct tegra_lcd_priv {
 	struct disp_ctlr *disp;		/* Display controller to use */
 	fdt_addr_t frame_buffer;	/* Address of frame buffer */
 	unsigned pixel_clock;		/* Pixel clock in Hz */
+	int dc_clk[2];			/* Contains clk and its parent */
 };
 
 enum {
@@ -134,7 +135,7 @@ static int update_display_mode(struct dc_disp_reg *disp,
 	 * the display clock (typically 600MHz) to the pixel clock. We round
 	 * up or down as requried.
 	 */
-	rate = clock_get_periph_rate(PERIPH_ID_DISP1, CLOCK_ID_CGENERAL);
+	rate = clock_get_periph_rate(priv->dc_clk[0], priv->dc_clk[1]);
 	div = ((rate * 2 + priv->pixel_clock / 2) / priv->pixel_clock) - 2;
 	debug("Display clock %lu, divider %lu\n", rate, div);
 
@@ -275,14 +276,13 @@ static int tegra_display_probe(const void *blob, struct tegra_lcd_priv *priv,
 	dc = (struct dc_ctlr *)priv->disp;
 
 	/*
-	 * A header file for clock constants was NAKed upstream.
-	 * TODO: Put this into the FDT and fdt_lcd struct when we have clock
-	 * support there
+	 * HOST1X is init by default at 150MHz with PLLC as parent
 	 */
-	clock_start_periph_pll(PERIPH_ID_HOST1X, CLOCK_ID_PERIPH,
-			       144 * 1000000);
-	clock_start_periph_pll(PERIPH_ID_DISP1, CLOCK_ID_CGENERAL,
-			       600 * 1000000);
+	clock_start_periph_pll(PERIPH_ID_HOST1X, CLOCK_ID_CGENERAL,
+			       150 * 1000000);
+	clock_start_periph_pll(priv->dc_clk[0], priv->dc_clk[1],
+			       clock_get_rate(priv->dc_clk[1]));
+
 	basic_init(&dc->cmd);
 	basic_init_timer(&dc->disp);
 	rgb_enable(&dc->com);
@@ -348,6 +348,7 @@ static int tegra_lcd_of_to_plat(struct udevice *dev)
 	struct display_timing *timing;
 	int node = dev_of_offset(dev);
 	int panel_node;
+	int dc_clk[4];
 	int rgb;
 	int ret;
 
@@ -356,6 +357,18 @@ static int tegra_lcd_of_to_plat(struct udevice *dev)
 		debug("%s: No display controller address\n", __func__);
 		return -EINVAL;
 	}
+
+	ret = fdtdec_get_int_array(blob, node, "clocks",
+				   dc_clk, ARRAY_SIZE(dc_clk));
+	if (ret < 0) {
+		debug("%s: Cannot decode clocks for '%s' (ret = %d)\n",
+		      __func__, dev->name, ret);
+		return -EINVAL;
+	}
+
+	/* First is clock and second is its parent */
+	priv->dc_clk[0] = clk_id_to_periph_id(dc_clk[1]);
+	priv->dc_clk[1] = clk_id_to_periph_id(dc_clk[3]);
 
 	rgb = fdt_subnode_offset(blob, node, "rgb");
 	if (rgb < 0) {
