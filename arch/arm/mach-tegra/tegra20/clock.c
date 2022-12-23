@@ -20,6 +20,8 @@
 #include <fdtdec.h>
 #include <linux/delay.h>
 
+#include <dt-bindings/clock/tegra20-car.h>
+
 /*
  * Clock types that we can use as a source. The Tegra20 has muxes for the
  * peripheral clocks, and in most cases there are four options for the clock
@@ -554,6 +556,33 @@ void reset_set_enable(enum periph_id periph_id, int enable)
  */
 enum periph_id clk_id_to_periph_id(int clk_id)
 {
+	/* first check if clock is not primary */
+	switch (clk_id) {
+	case TEGRA20_CLK_PLL_C:
+		return CLOCK_ID_CGENERAL;
+	case TEGRA20_CLK_PLL_M:
+		return CLOCK_ID_MEMORY;
+	case TEGRA20_CLK_PLL_P:
+		return CLOCK_ID_PERIPH;
+	case TEGRA20_CLK_PLL_A:
+		return CLOCK_ID_AUDIO;
+	case TEGRA20_CLK_PLL_U:
+		return CLOCK_ID_USB;
+	case TEGRA20_CLK_PLL_D:
+	case TEGRA20_CLK_PLL_D_OUT0:
+		return CLOCK_ID_DISPLAY;
+	case TEGRA20_CLK_PLL_X:
+		return CLOCK_ID_XCPU;
+	case TEGRA20_CLK_PLL_E:
+		return CLOCK_ID_EPCI;
+	case TEGRA20_CLK_CLK_32K:
+		return CLOCK_ID_32KHZ;
+	case TEGRA20_CLK_CLK_M:
+		return CLOCK_ID_CLK_M;
+	default:
+		break;
+	}
+
 	if (clk_id > PERIPH_ID_COUNT)
 		return PERIPH_ID_NONE;
 
