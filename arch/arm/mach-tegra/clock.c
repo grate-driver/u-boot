@@ -776,17 +776,20 @@ void tegra30_set_up_pllp(void)
 	case CLOCK_OSC_FREQ_48_0: /* OSC is 48Mhz */
 		clock_set_rate(CLOCK_ID_PERIPH, 408, 12, 0, 8);
 		clock_set_rate(CLOCK_ID_CGENERAL, 456, 12, 1, 8);
+		clock_set_rate(CLOCK_ID_DISPLAY, 456, 12, 1, 8);
 		break;
 
 	case CLOCK_OSC_FREQ_26_0: /* OSC is 26Mhz */
 		clock_set_rate(CLOCK_ID_PERIPH, 408, 26, 0, 8);
 		clock_set_rate(CLOCK_ID_CGENERAL, 600, 26, 0, 8);
+		clock_set_rate(CLOCK_ID_DISPLAY, 600, 26, 0, 8);
 		break;
 
 	case CLOCK_OSC_FREQ_13_0: /* OSC is 13Mhz */
 	case CLOCK_OSC_FREQ_16_8: /* OSC is 16.8Mhz */
 		clock_set_rate(CLOCK_ID_PERIPH, 408, 13, 0, 8);
 		clock_set_rate(CLOCK_ID_CGENERAL, 600, 13, 0, 8);
+		clock_set_rate(CLOCK_ID_DISPLAY, 600, 13, 0, 8);
 		break;
 
 	case CLOCK_OSC_FREQ_19_2:
